@@ -37,11 +37,15 @@ set(INSTALL_DESTINATION_IN_SHARE ${PROJECT_NAME})
 
 # install the meshes in the build directory when building
 message(STATUS "Will unpack meshes from the installer: \n${INSTALLER_PATH} --prefix ${TMP_DIR} ${INSTALL_MODE_FLAG}")
-add_custom_target(install_meshes ALL
+add_custom_command(
+  OUTPUT ${TMP_MESH_PATH}
   COMMAND chmod +x ${INSTALLER_PATH}
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/install_with_auto_mode.sh ${INSTALLER_PATH} --prefix ${TMP_DIR}
-  BYPRODUCTS ${TMP_MESH_PATH}
-  TERMINAL
+  COMMENT "Unpacking meshes only if not already present"
+)
+
+add_custom_target(install_meshes ALL
+  DEPENDS ${TMP_MESH_PATH}
 )
 
 # install the archive
